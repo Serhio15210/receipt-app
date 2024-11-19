@@ -1,0 +1,70 @@
+@use "variables";
+@use "media-queryes";
+.recipesContainer{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-auto-flow: row dense;
+  gap: 20px;
+  padding: 40px 0;
+  position: relative;
+}
+.searchContainer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .row{
+    display: inline-grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 10px;
+  }
+  .inputBlock{
+    position: relative;
+    display: flex;
+    align-items: center;
+    input{
+      width: 100%;
+      padding-right: 40px;
+    }
+    img{
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      z-index: 2;
+      right: 20px;
+    }
+
+  }
+
+}
+.pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.pagination a {
+  cursor: pointer;
+  border: 2px solid variables.$blue;
+  border-radius: 5px;
+  padding: 5px 10px;
+  transition: background-color variables.$fast ease-in-out;
+  &:hover{
+    background: variables.$blue;
+  }
+}
+
+.pagination .active a {
+  font-weight: bold;
+  background: variables.$blue;
+}
+
+.pagination .disabled {
+  color: variables.$gray;
+  pointer-events: none;
+}
+

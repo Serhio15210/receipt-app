@@ -1,0 +1,62 @@
+@use "src/styles/variables";
+
+.card {
+  display: flex;
+  flex-direction: row;
+  border-radius: 10px;
+  border: 2px solid variables.$gray;
+  transition: border-color variables.$fast ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    border-color: variables.$blue;
+  }
+
+  img {
+    width: 50%;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    object-fit: cover;
+  }
+
+  .content {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    flex: 1;
+
+    p {
+      font-size: 16px;
+    }
+
+    .desc {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+
+      span {
+        color: variables.$blue;
+      }
+    }
+  }
+
+}
+
