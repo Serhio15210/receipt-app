@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ChangeEvent, useEffect } from "react";
 import { debounce } from "lodash";
-import Select from "react-select";
+import Select, { SingleValue } from "react-select";
 import styles from "@/styles/home.module.scss";
 import RecipeCard from "@/components/recipe-card";
 import ReactPaginate from "react-paginate";
@@ -39,7 +39,11 @@ function RouteComponent() {
   const handlePageChange = (selected: { selected: number }) => {
     setPage(selected.selected);
   };
-
+  const handleSelectChange = (
+    newValue: SingleValue<{ label: string; value: string }>,
+  ) => {
+    setSelectFilter(newValue);
+  };
   return (
     <div className={"container"}>
       <div className={styles.searchContainer}>
@@ -61,7 +65,7 @@ function RouteComponent() {
             isClearable
             value={selectFilter}
             placeholder={"Select category..."}
-            onChange={setSelectFilter}
+            onChange={handleSelectChange}
             options={filterCategories}
           />
         </div>

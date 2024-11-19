@@ -4,24 +4,27 @@ import { useStore } from "@/zustand/store.ts";
 export const Route = createFileRoute("/cart")({
   component: RouteComponent,
 });
-
+type Ingr = {
+  idMeal: string;
+  strMeal: string;
+  [key: string]: string | null; // Поддержка динамических ключей
+};
 function RouteComponent() {
   const cart = useStore((state) => state.cart);
   const removeFromCart = useStore((state) => state.removeFromCart);
   const resetCart = useStore((state) => state.resetCart);
-  const array = Array.from({ length: 20 }, (_, index) => index + 1);
-  const groupedIngredients = cart.map((recipe) => {
-    const ingredients = array
-      .map((item) => {
-        return recipe
-          ? [recipe[`strIngredient${item}`], recipe[`strMeasure${item}`]]
-          : [];
-      })
-      .filter((subArray) =>
-        subArray.every(
-          (item) => item !== null && item !== "" && item !== undefined,
-        ),
-      );
+
+  const groupedIngredients = cart.map((recipe: Ingr) => {
+    const ingredients = Array.from({ length: 20 }, (_, index) => {
+      const ingredientKey = `strIngredient${index + 1}`;
+      const measureKey = `strMeasure${index + 1}`;
+
+      if (recipe[ingredientKey] && recipe[measureKey]) {
+        return [recipe[ingredientKey], recipe[measureKey]];
+      }
+
+      return null; // Убираем пустые или недопустимые значения
+    }).filter((entry): entry is [string, string] => entry !== null); // Убираем null и уточняем тип
 
     return {
       name: recipe.strMeal,

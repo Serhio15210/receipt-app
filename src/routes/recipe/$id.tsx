@@ -8,7 +8,11 @@ import React from "react";
 export const Route = createFileRoute("/recipe/$id")({
   component: RouteComponent,
 });
-
+type Ingr = {
+  strMeal: string;
+  [key: `strIngredient${number}`]: string | undefined;
+  [key: `strMeasure${number}`]: string | undefined;
+};
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data, isLoading } = useGetMealById(id);
@@ -16,9 +20,10 @@ function RouteComponent() {
   const array = Array.from({ length: 20 }, (_, index) => index);
   const ingredients = array
     .map((item) => {
-      return recipe
-        ? [recipe[`strIngredient${item}`], recipe[`strMeasure${item}`]]
-        : [];
+      const ingredientKey = `strIngredient${item}` as keyof Ingr;
+      const measureKey = `strMeasure${item}` as keyof Ingr;
+
+      return recipe?.idMeal ? [recipe[ingredientKey], recipe[measureKey]] : [];
     })
     .filter((subArray) =>
       subArray.every(

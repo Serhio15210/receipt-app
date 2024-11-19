@@ -4,15 +4,14 @@ import {
 } from "@/api/recipes/queries/queries.ts";
 import { useCallback, useMemo, useState } from "react";
 import { debounce } from "lodash";
+import { SingleValue } from "react-select";
 
 export const useHomeMeals = () => {
   const pageLimit = 20;
   const [mealName, setMealName] = useState("");
   const [page, setPage] = useState(0);
-  const [selectFilter, setSelectFilter] = useState<{
-    label: string;
-    value: string;
-  }>(null);
+  const [selectFilter, setSelectFilter] =
+    useState<SingleValue<{ label: string; value: string }>>(null);
 
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
