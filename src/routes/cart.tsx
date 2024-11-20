@@ -1,30 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
 import styles from "@/styles/cart.module.scss";
 import { useStore } from "@/zustand/store.ts";
+import { Meal } from "@/api/recipes/types.ts";
 export const Route = createFileRoute("/cart")({
   component: RouteComponent,
 });
-type Ingr = {
-  idMeal: string;
-  strMeal: string;
-  [key: string]: string | null; // Поддержка динамических ключей
-};
+
 function RouteComponent() {
   const cart = useStore((state) => state.cart);
   const removeFromCart = useStore((state) => state.removeFromCart);
   const resetCart = useStore((state) => state.resetCart);
 
-  const groupedIngredients = cart.map((recipe: Ingr) => {
+  const groupedIngredients = cart.map((recipe) => {
     const ingredients = Array.from({ length: 20 }, (_, index) => {
-      const ingredientKey = `strIngredient${index + 1}`;
-      const measureKey = `strMeasure${index + 1}`;
+      const ingredientKey = `strIngredient${index + 1}` as keyof Meal;
+      const measureKey = `strMeasure${index + 1}` as keyof Meal;
 
       if (recipe[ingredientKey] && recipe[measureKey]) {
         return [recipe[ingredientKey], recipe[measureKey]];
       }
-
-      return null; // Убираем пустые или недопустимые значения
-    }).filter((entry): entry is [string, string] => entry !== null); // Убираем null и уточняем тип
+      return null;
+    }).filter((entry): entry is [string, string] => entry !== null);
 
     return {
       name: recipe.strMeal,

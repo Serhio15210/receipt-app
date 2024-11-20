@@ -4,24 +4,20 @@ import styles from "@/styles/recipe.module.scss";
 import Loader from "@/components/loader";
 import { useStore } from "@/zustand/store.ts";
 import React from "react";
+import { Meal } from "@/api/recipes/types.ts";
 
 export const Route = createFileRoute("/recipe/$id")({
   component: RouteComponent,
 });
-type Ingr = {
-  strMeal: string;
-  [key: `strIngredient${number}`]: string | undefined;
-  [key: `strMeasure${number}`]: string | undefined;
-};
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data, isLoading } = useGetMealById(id);
   const recipe = data?.meals[0];
   const array = Array.from({ length: 20 }, (_, index) => index);
   const ingredients = array
-    .map((item) => {
-      const ingredientKey = `strIngredient${item}` as keyof Ingr;
-      const measureKey = `strMeasure${item}` as keyof Ingr;
+    .map((_, index) => {
+      const ingredientKey = `strIngredient${index + 1}` as keyof Meal;
+      const measureKey = `strMeasure${index + 1}` as keyof Meal;
 
       return recipe?.idMeal ? [recipe[ingredientKey], recipe[measureKey]] : [];
     })
@@ -37,8 +33,8 @@ function RouteComponent() {
   const toggleCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isAdded) {
-      removeFromCart(recipe?.idMeal);
-    } else addToCart(recipe);
+      removeFromCart(recipe?.idMeal as keyof Meal);
+    } else addToCart(recipe as Meal);
   };
   return isLoading ? (
     <Loader />

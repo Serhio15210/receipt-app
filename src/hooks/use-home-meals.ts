@@ -19,7 +19,6 @@ export const useHomeMeals = () => {
     mealName,
     debouncedQuery,
   );
-
   const { data: categories } = useGetCategories();
   const filterCategories = categories?.meals.map((item) => ({
     label: item.strCategory,
@@ -37,9 +36,9 @@ export const useHomeMeals = () => {
 
   const paginatedData = useMemo(() => {
     if (!filterData) return [];
-    const startIndex = page * pageLimit; // Начало для текущей страницы
-    const endIndex = startIndex + pageLimit; // Конец для текущей страницы
-    return filterData.slice(startIndex, endIndex); // Срез данных
+    const startIndex = page * pageLimit;
+    const endIndex = startIndex + pageLimit;
+    return filterData.slice(startIndex, endIndex);
   }, [filterData, page, pageLimit]);
 
   const totalPages = useMemo(() => {

@@ -1,14 +1,15 @@
-// @ts-nocheck
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Meal } from "@/api/recipes/types.ts";
+
 interface IStoreState {
   cart: Meal[];
-  addToCart: (item: Meal | undefined) => void;
-  removeFromCart: (id: string | undefined) => void;
+  addToCart: (item: Meal) => void;
+  removeFromCart: (id: string) => void;
   resetCart: () => void;
 }
-export const useStore = create<IStoreState>(
+
+export const useStore = create<IStoreState>()(
   persist(
     (set) => ({
       cart: [],
