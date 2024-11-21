@@ -2,7 +2,7 @@ import {
   useGetCategories,
   useSearchMeal,
 } from "@/api/recipes/queries/queries.ts";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import { SingleValue } from "react-select";
 
@@ -14,8 +14,8 @@ export const useHomeMeals = () => {
     useState<SingleValue<{ label: string; value: string }>>(null);
 
   const [debouncedQuery, setDebouncedQuery] = useState("");
-
-  const { data, refetch, isLoading, isRefetching } = useSearchMeal(
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const { data, refetch, isLoading, isFetching } = useSearchMeal(
     mealName,
     debouncedQuery,
   );
@@ -45,12 +45,13 @@ export const useHomeMeals = () => {
     return filterData ? Math.ceil(filterData.length / pageLimit) : 0;
   }, [filterData, pageLimit]);
 
-  const debouncedRefetch = useCallback(
+  const debouncedRefetch = useCallback(() => {
+    setIsDebouncing(true);
     debounce(() => {
       refetch();
-    }, 1000),
-    [refetch],
-  );
+      setIsDebouncing(false);
+    }, 1000)();
+  }, [refetch]);
 
   return {
     mealName,
@@ -61,9 +62,9 @@ export const useHomeMeals = () => {
     filterCategories,
     totalPages,
     debouncedRefetch,
+    page,
     setPage,
-    isLoading,
-    isRefetching,
+    isLoading: isLoading || isFetching || isDebouncing,
     setDebouncedQuery,
   };
 };

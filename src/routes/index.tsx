@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ChangeEvent, useEffect } from "react";
 import { debounce } from "lodash";
 import Select, { SingleValue } from "react-select";
@@ -7,8 +7,15 @@ import RecipeCard from "@/components/recipe-card";
 import ReactPaginate from "react-paginate";
 import { useHomeMeals } from "@/hooks/use-home-meals.ts";
 import Loader from "@/components/loader";
+
 export const Route = createFileRoute("/")({
   component: RouteComponent,
+  validateSearch: (search: { page?: number; filter?: string }) => {
+    return {
+      page: search.page || 1,
+      filter: search.filter || "",
+    };
+  },
 });
 
 function RouteComponent() {
@@ -18,6 +25,7 @@ function RouteComponent() {
     debouncedRefetch,
     setDebouncedQuery,
     setPage,
+    page,
     selectFilter,
     setSelectFilter,
     filterCategories,
@@ -25,25 +33,57 @@ function RouteComponent() {
     totalPages,
     isLoading,
   } = useHomeMeals();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
 
+  const goToPage = (page: number) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: page,
+      }),
+      replace: true,
+    });
+  };
+  const goToFilter = (filter: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filter: filter,
+      }),
+      replace: true,
+    });
+  };
   const searchByName = (e: ChangeEvent<HTMLInputElement>) => {
     setMealName(e.target.value);
   };
-
-  useEffect(() => {
-    const debouncedFn = debounce(() => setDebouncedQuery(mealName), 1500);
-    debouncedRefetch();
-    return () => debouncedFn.cancel();
-  }, [debouncedRefetch, mealName, setDebouncedQuery]);
-
   const handlePageChange = (selected: { selected: number }) => {
     setPage(selected.selected);
+    goToPage(selected.selected + 1);
   };
   const handleSelectChange = (
     newValue: SingleValue<{ label: string; value: string }>,
   ) => {
     setSelectFilter(newValue);
+    goToFilter(newValue?.value || "");
   };
+  useEffect(() => {
+    const debouncedFn = debounce(() => setDebouncedQuery(mealName), 1000);
+    debouncedRefetch();
+    return () => debouncedFn.cancel();
+  }, [debouncedRefetch, mealName, setDebouncedQuery]);
+  useEffect(() => {
+    setPage(search.page ? search.page - 1 : 0);
+    setSelectFilter(
+      search?.filter
+        ? {
+            label: search?.filter,
+            value: search?.filter,
+          }
+        : null,
+    );
+  }, []);
+
   return (
     <div className={"container"}>
       <div className={styles.searchContainer}>
