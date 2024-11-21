@@ -2,7 +2,7 @@ import {
   useGetCategories,
   useSearchMeal,
 } from "@/api/recipes/queries/queries.ts";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { debounce } from "lodash";
 import { SingleValue } from "react-select";
 

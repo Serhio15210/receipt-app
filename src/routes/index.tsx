@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ChangeEvent, useEffect } from "react";
 import { debounce } from "lodash";
 import Select, { SingleValue } from "react-select";
@@ -7,10 +7,13 @@ import RecipeCard from "@/components/recipe-card";
 import ReactPaginate from "react-paginate";
 import { useHomeMeals } from "@/hooks/use-home-meals.ts";
 import Loader from "@/components/loader";
-
+type ItemFilters = {
+  page: number;
+  filter: string;
+};
 export const Route = createFileRoute("/")({
   component: RouteComponent,
-  validateSearch: (search: { page?: number; filter?: string }) => {
+  validateSearch: (search: { page?: number; filter?: string }): ItemFilters => {
     return {
       page: search.page || 1,
       filter: search.filter || "",
@@ -25,7 +28,6 @@ function RouteComponent() {
     debouncedRefetch,
     setDebouncedQuery,
     setPage,
-    page,
     selectFilter,
     setSelectFilter,
     filterCategories,
@@ -38,7 +40,7 @@ function RouteComponent() {
 
   const goToPage = (page: number) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: ItemFilters) => ({
         ...prev,
         page: page,
       }),
@@ -47,7 +49,7 @@ function RouteComponent() {
   };
   const goToFilter = (filter: string) => {
     navigate({
-      search: (prev) => ({
+      search: (prev: ItemFilters) => ({
         ...prev,
         filter: filter,
       }),
