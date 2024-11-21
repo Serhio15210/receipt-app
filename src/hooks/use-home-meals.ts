@@ -33,7 +33,6 @@ export const useHomeMeals = () => {
         )
       : data.meals;
   }, [data, selectFilter]);
-
   const paginatedData = useMemo(() => {
     if (!filterData) return [];
     const startIndex = page * pageLimit;

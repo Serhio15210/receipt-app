@@ -15,8 +15,8 @@ export const Route = createFileRoute("/")({
   component: RouteComponent,
   validateSearch: (search: { page?: number; filter?: string }): ItemFilters => {
     return {
-      page: search.page || 1,
       filter: search.filter || "",
+      page: search.page || 1,
     };
   },
 });
@@ -28,6 +28,7 @@ function RouteComponent() {
     debouncedRefetch,
     setDebouncedQuery,
     setPage,
+    page,
     selectFilter,
     setSelectFilter,
     filterCategories,
@@ -49,8 +50,8 @@ function RouteComponent() {
   };
   const goToFilter = (filter: string) => {
     navigate({
-      search: (prev: ItemFilters) => ({
-        ...prev,
+      search: () => ({
+        page: 1,
         filter: filter,
       }),
       replace: true,
@@ -68,6 +69,7 @@ function RouteComponent() {
   ) => {
     setSelectFilter(newValue);
     goToFilter(newValue?.value || "");
+    setPage(0);
   };
   useEffect(() => {
     const debouncedFn = debounce(() => setDebouncedQuery(mealName), 1000);
@@ -85,6 +87,9 @@ function RouteComponent() {
         : null,
     );
   }, []);
+  useEffect(() => {
+    console.log(page, selectFilter, paginatedData);
+  }, [page, paginatedData, selectFilter]);
 
   return (
     <div className={"container"}>
